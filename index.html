@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroCalc - 프리미엄 웹 전자 계산기</title>
+  <meta name="description" content="현대적인 글래스모피즘 디자인과 강력한 공학용 연산 기능을 지원하는 프리미엄 웹 전자 계산기 AeroCalc입니다.">
+  
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Background Decorative Blobs -->
+  <div class="bg-glow blob-1"></div>
+  <div class="bg-glow blob-2"></div>
+  <div class="bg-glow blob-3"></div>
+
+  <main class="app-container">
+    <div class="calculator-card" id="calculator-card">
+      
+      <!-- Top Control Bar -->
+      <header class="calc-header">
+        <div class="logo">
+          <span class="logo-accent">Aero</span>Calc
+        </div>
+        
+        <!-- Toggle Buttons -->
+        <div class="controls-group">
+          <!-- Audio Toggle -->
+          <button class="icon-btn" id="sound-toggle" aria-label="음향 피드백 토글" title="사운드 피드백">
+            <svg class="icon sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <svg class="icon sound-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button class="icon-btn" id="theme-toggle" aria-label="테마 토글" title="다크/라이트 모드">
+            <svg class="icon theme-sun hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="icon theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <!-- History Toggle -->
+          <button class="icon-btn" id="history-toggle" aria-label="계산 기록 토글" title="계산 기록">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Mode Switch Tab -->
+      <div class="mode-selector-container">
+        <div class="mode-slider">
+          <button class="mode-tab active" id="mode-std">기본형</button>
+          <button class="mode-tab" id="mode-sci">공학용</button>
+          <span class="mode-slider-pill"></span>
+        </div>
+      </div>
+
+      <!-- Display Area -->
+      <section class="display-section">
+        <div class="display-meta">
+          <span class="angle-unit-badge" id="angle-unit-badge" title="클릭하여 각도 단위 변경">DEG</span>
+          <button class="copy-btn" id="copy-display-btn" title="결과 복사" aria-label="디스플레이 값 복사">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="tooltip" id="copy-tooltip">복사 완료</span>
+          </button>
+        </div>
+        <div class="display-screen">
+          <div class="expression" id="expression-display" aria-live="polite"></div>
+          <div class="result" id="result-display" aria-live="polite">0</div>
+        </div>
+      </section>
+
+      <!-- Keypad Container (Standard & Scientific Flex Layout) -->
+      <div class="keypad-wrapper">
+        
+        <!-- Scientific Pad (Collapsible) -->
+        <div class="scientific-pad" id="scientific-pad">
+          <!-- Angle Toggle (Rad/Deg) -->
+          <button class="key key-sci" data-action="toggle-angle" id="key-angle">RAD</button>
+          <button class="key key-sci" data-action="sci-func" data-val="sin(">sin</button>
+          <button class="key key-sci" data-action="sci-func" data-val="cos(">cos</button>
+          <button class="key key-sci" data-action="sci-func" data-val="tan(">tan</button>
+          
+          <button class="key key-sci" data-action="sci-func" data-val="log(">log</button>
+          <button class="key key-sci" data-action="sci-func" data-val="ln(">ln</button>
+          <button class="key key-sci" data-val="pi">π</button>
+          <button class="key key-sci" data-val="e">e</button>
+          
+          <button class="key key-sci" data-action="sci-func" data-val="^">x<sup>y</sup></button>
+          <button class="key key-sci" data-action="sci-func" data-val="^2">x²</button>
+          <button class="key key-sci" data-action="sci-func" data-val="sqrt(">√</button>
+          <button class="key key-sci" data-action="sci-func" data-val="abs(">|x|</button>
+
+          <button class="key key-sci" data-action="sci-func" data-val="exp(">exp</button>
+          <button class="key key-sci" data-val="!">n!</button>
+          <button class="key key-sci" data-val="(">(</button>
+          <button class="key key-sci" data-val=")">)</button>
+        </div>
+
+        <!-- Standard Pad -->
+        <div class="standard-pad">
+          <!-- Row 1: Clear, Backspace, Modulo, Division -->
+          <button class="key key-operator key-fn" data-action="clear" id="key-clear">C</button>
+          <button class="key key-operator key-fn" data-action="backspace" id="key-backspace" aria-label="백스페이스">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+              <line x1="18" y1="9" x2="12" y2="15"></line>
+              <line x1="12" y1="9" x2="18" y2="15"></line>
+            </svg>
+          </button>
+          <button class="key key-operator" data-val="%">%</button>
+          <button class="key key-operator" data-val="/" id="key-div">÷</button>
+
+          <!-- Row 2: 7, 8, 9, Multiplication -->
+          <button class="key key-num" data-val="7">7</button>
+          <button class="key key-num" data-val="8">8</button>
+          <button class="key key-num" data-val="9">9</button>
+          <button class="key key-operator" data-val="*" id="key-mul">×</button>
+
+          <!-- Row 3: 4, 5, 6, Subtraction -->
+          <button class="key key-num" data-val="4">4</button>
+          <button class="key key-num" data-val="5">5</button>
+          <button class="key key-num" data-val="6">6</button>
+          <button class="key key-operator" data-val="-" id="key-sub">−</button>
+
+          <!-- Row 4: 1, 2, 3, Addition -->
+          <button class="key key-num" data-val="1">1</button>
+          <button class="key key-num" data-val="2">2</button>
+          <button class="key key-num" data-val="3">3</button>
+          <button class="key key-operator" data-val="+" id="key-add">+</button>
+
+          <!-- Row 5: Plus/Minus, 0, Decimal, Equals -->
+          <button class="key key-num" data-action="negate">±</button>
+          <button class="key key-num" data-val="0">0</button>
+          <button class="key key-num" data-val=".">.</button>
+          <button class="key key-equals" data-action="calculate" id="key-equals">=</button>
+        </div>
+      </div>
+
+      <!-- History Sidebar Panel (Slide-out) -->
+      <aside class="history-panel" id="history-panel">
+        <div class="history-header">
+          <h3>계산 기록</h3>
+          <button class="icon-btn" id="close-history-btn" aria-label="기록 닫기">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">기록이 없습니다.</div>
+        </div>
+        <div class="history-footer">
+          <button class="clear-history-btn" id="clear-history-btn">기록 전체 삭제</button>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- JS Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
